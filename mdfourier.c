@@ -57,21 +57,21 @@ void ymloadchannel(u8 channel)
 {
 //0x38 Phase & amplitude modulation sensitivity PMS: 0x00 AMS: 0x00
 	YM2151_writeReg(0x38+channel, 0x00);
-//0x40 Detune & phase multiply Slot: 0000 Decay: 0x00 Multi: 0x00
+//0x40 Detune & phase multiply Slot: 0000 Decay: 0x00 Multi: 0x04
 	YM2151_writeReg(0x40+channel, 0x04);
-//0x48 Detune & phase multiply Slot: 0001 Decay: 0x00 Multi: 0x00
+//0x48 Detune & phase multiply Slot: 0001 Decay: 0x00 Multi: 0x04
 	YM2151_writeReg(0x48+channel, 0x04);
-//0x50 Detune & phase multiply Slot: 0010 Decay: 0x00 Multi: 0x00
+//0x50 Detune & phase multiply Slot: 0010 Decay: 0x00 Multi: 0x04
 	YM2151_writeReg(0x50+channel, 0x04);
-//0x58 Detune & phase multiply Slot: 0011 Decay: 0x02 Multi: 0x00
+//0x58 Detune & phase multiply Slot: 0011 Decay: 0x00 Multi: 0x04
 	YM2151_writeReg(0x58+channel, 0x04);
-//0x60 Total level Slot: 0000 Volume: 0x0020
+//0x60 Total level Slot: 0000 Volume: 0x0000
 	YM2151_writeReg(0x60+channel, 0x00);
-//0x68 Total level Slot: 0001 Volume: 0x0020
+//0x68 Total level Slot: 0001 Volume: 0x0000
 	YM2151_writeReg(0x68+channel, 0x00);
-//0x70 Total level Slot: 0010 Volume: 0x0020
+//0x70 Total level Slot: 0010 Volume: 0x0000
 	YM2151_writeReg(0x70+channel, 0x00);
-//0x78 Total level Slot: 0011 Volume: 0x000D
+//0x78 Total level Slot: 0011 Volume: 0x0000
 	YM2151_writeReg(0x78+channel, 0x00);
 //0x80 EG Attack Slot: 0000 Keyscale: 01 Attack rate: 0x01F
 	YM2151_writeReg(0x80+channel, 0x5F);
@@ -105,9 +105,9 @@ void ymloadchannel(u8 channel)
 	YM2151_writeReg(0xF0+channel, 0x0F);
 //0xF8 EG Decay level, Release rate Slot: 0011 First Decay: 0x00 Release rate: 0x0F
 	YM2151_writeReg(0xF8+channel, 0x0F);
-//0x20 L: Y R: Y Feedback: 0100 Connection: 0100
+//0x20 L: Y R: Y Feedback: 000 Connection: 111
 	YM2151_writeReg(0x20+channel, 0xC7);
-//0x28 Octave:0x07 Note: 0x0E
+//0x28 Octave:0x06 Note: 0x0C
 	YM2151_writeReg(0x28+channel, 0x6C);
 }
 
@@ -139,8 +139,8 @@ void ymPlay(u8 channel, u8 note, u8 octave, u8 pan)
 {
 	ym2151_keyoff(channel);
 
-	// set stereo balance
-	//YM2151_writeReg(0x20+1, pan+0x07);
+	// set stereo balance Feedback: 000 Connection: 111
+	//YM2151_writeReg(0x20+channel, pan|0x07);
 
 	//Register 0x28 - frequency
 	YM2151_writeReg(0x28+channel,(octave << 4) | note);

@@ -21,8 +21,8 @@
 
 #include "types.h"
 
-#define STEREO_RIGHT		0x40
-#define STEREO_LEFT			0x80
+#define STEREO_RIGHT		0x80
+#define STEREO_LEFT			0x40
 #define STEREO_BOTH			0xC0
 
 extern int video_count;
