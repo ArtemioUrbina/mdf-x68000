@@ -23,7 +23,7 @@ LDSCRIPT 	=
 OCFLAGS     = -O xfile
 
 # What our application is named
-TARGET			= MDFourier
+TARGET			= mdf
 EXE				= $(TARGET).X
 
 all: $(EXE)
