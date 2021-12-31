@@ -123,7 +123,7 @@ void yminit()
 	YM2151_writeReg(0x0F, 0x00);
 //0x14 Clock Functions CSM OFF F-Reset: 00 IRQEN: 00 LOAD: 00
 	YM2151_writeReg(0x14, 0x00);
-//0x18 LOW OSCILLATION FREQUENCY 0x00BC
+//0x18 LOW OSCILLATION FREQUENCY 0x0000
 	YM2151_writeReg(0x18, 0x00);
 //0x19 PHS OR AMP MODULATION DEPTH 0x0000
 	YM2151_writeReg(0x19, 0x00);
@@ -140,7 +140,7 @@ void ymPlay(u8 channel, u8 note, u8 octave, u8 pan)
 	ym2151_keyoff(channel);
 
 	// set stereo balance Feedback: 000 Connection: 111
-	//YM2151_writeReg(0x20+channel, pan|0x07);
+	YM2151_writeReg(0x20+channel, pan|0x07);
 
 	//Register 0x28 - frequency
 	YM2151_writeReg(0x28+channel,(octave << 4) | note);
@@ -213,21 +213,21 @@ int ExecuteFM(u16 framelen)
 		for(note = 0; note < 16; note++)
 		{
 			ymPlay(chann, note, octave, STEREO_LEFT);
-			//ymPlay(chann+4, note, octave, STEREO_RIGHT);
+			ymPlay(chann+4, note, octave, STEREO_RIGHT);
 			
 			for(frame = 0; frame < framelen; frame++)
 			{					
 				if(frame == framelen - framelen/5)
 				{
 					ym2151_keyoff(chann);
-					//ym2151_keyoff(chann+4);
+					ym2151_keyoff(chann+4);
 				}
 				if(read_input() == -1)
 					return 0;
 				wait_vblank();
 			}
 			chann ++;
-			if(chann > 7)
+			if(chann > 3)
 				chann = 0;
 		}
 	}
