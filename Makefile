@@ -29,7 +29,7 @@ EXE				= $(TARGET).X
 all: $(EXE)
 
 # The main application
-OBJFILES = build/main.o build/ym2151.o build/mdfourier.o build/MSM6258.o build/key.o
+OBJFILES = build/main.o build/ym2151.o build/mdfourier.o build/MSM6258.o build/key.o build/crc.o
 
 $(EXE):  $(OBJFILES)
 	$(CC) $(LDFLAGS) $(OBJFILES) $(LIBS) -o bin/$(TARGET)
@@ -62,6 +62,8 @@ build/MSM6258.o: MSM6258.c
 build/key.o: key.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o build/key.o
 
+build/crc.o: crc.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o build/crc.o
 
 ###############################
 #

@@ -25,7 +25,11 @@
 #include <stdlib.h>
 #include "video.h"
 #include "key.h"
+#include "crc.h"
 #include "mdfourier.h"
+
+#define ADPCM_SIZE	39061
+#define ADPCM_CRC32	0x8E5FFD51
 
 // Enter supervisor mode, so we can access vblank regiter
 void initX68000()
@@ -57,6 +61,10 @@ u8 *loadADPCM(char *filename, u16 *size)
 		return NULL;
 	}
 	
+	// truncate the file, useful if transferred via XMODEM
+	if(file_size > ADPCM_SIZE)
+		file_size = ADPCM_SIZE;
+
 	file_buffer = (u8*)malloc(sizeof(u8)*file_size);
 	if(!file_buffer)
 	{		
@@ -81,11 +89,12 @@ int main(void)
 	int 			input = 0;
 	unsigned char	*adpcm_sweep = NULL;
 	unsigned short	adpcm_size = 0;
+	DWORD			crc32;
 	
 	initX68000();
 	
-	printf("MDFourier for X68000 v 0.2 -- http://junkerhq.net/MDFourier\n");
-	printf("  Artemio Urbina 2021\n\n");
+	printf("MDFourier for X68000 v 0.3 -- http://junkerhq.net/MDFourier\n");
+	printf("  Artemio Urbina 2021-2022\n\n");
 	
 	printf("Loading ADPCM samples...\n");
 	adpcm_sweep = loadADPCM("sweep.pcm", &adpcm_size);
@@ -95,9 +104,11 @@ int main(void)
 		return 0;
 	}
 	
-	if(adpcm_size != 39061)
+	printf("Verifying ADPCM samples...\n");
+	crc32 = crc32buf((char*)adpcm_sweep, adpcm_size);
+	if(crc32 != ADPCM_CRC32)
 	{
-		printf("ADPCM samples did not match the expected length, aborting\n");
+		printf("ADPCM samples did not match the expected CRC32: 0x%X != 0x%X. Aborting\n", (unsigned int)crc32, ADPCM_CRC32);
 		free(adpcm_sweep);
 		adpcm_sweep = NULL;
 		adpcm_size = 0;
